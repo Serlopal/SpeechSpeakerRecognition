@@ -1,6 +1,7 @@
 # DT2118, Lab 1 Feature Extraction
 import math
 import numpy as np
+import scipy.signal
 # Function given by the exercise ----------------------------------
 
 def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, nceps=13, samplingrate=20000, liftercoeff=22):
@@ -42,11 +43,11 @@ def enframe(samples, winlen, winshift):
     """
 
     difference = winlen - winshift
-    N = math.floor(len(samples)/difference)
-    x = np.empty([N, winlen])
-    for i in samples[:winshift:]:
-        x[i] = samples[i:i+winlen]
-    return np.array(N,x,winlen)
+    N = math.ceil((len(samples)-winlen)/difference)
+    x = np.zeros([N, winlen])
+    for i in range(N):
+        x[i] = samples[i*winshift:(i*winshift)+winlen]
+    return x
 
 def preemp(input, p=0.97):
     """
@@ -61,6 +62,7 @@ def preemp(input, p=0.97):
         output: array of pre-emphasised speech samples
     Note (you can use the function lfilter from scipy.signal)
     """
+    return scipy.signal.lfilter([1,-1*p], [1], input, 1)
 
 def windowing(input):
     """
@@ -70,7 +72,7 @@ def windowing(input):
         input: array of speech samples [N x M] where N is the number of frames and
                M the samples per frame
     Output:
-        array of windoed speech samples [N x M]
+        array of windowed speech samples [N x M]
     Note (you can use the function hamming from scipy.signal, include the sym=0 option
     if you want to get the same results as in the example)
     """
