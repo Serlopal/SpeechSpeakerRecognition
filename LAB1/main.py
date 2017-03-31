@@ -1,5 +1,6 @@
-import numpy as np
 import proto
+import tools
+import numpy as np
 import matplotlib.pyplot as plt
 
 example = np.load('example_python3.npz')['example'].item()
@@ -11,10 +12,11 @@ windowed = proto.windowing(preemph)
 spec = proto.powerSpectrum(windowed, 512)
 mspec = proto.logMelSpectrum(spec, 20000)
 mfcc = proto.cepstrum(mspec,13)
+lmfcc = tools.lifter(mfcc)
 
-print(np.sum(mfcc-example['mfcc']))
+print(np.sum(lmfcc-example['lmfcc']))
 
-plt.pcolormesh(mfcc.T)
+plt.pcolormesh(lmfcc)
 plt.show()
 
 
