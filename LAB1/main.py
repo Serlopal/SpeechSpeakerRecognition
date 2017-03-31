@@ -2,6 +2,8 @@ import proto
 import tools
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.spatial import distance
+
 
 example = np.load('example_python3.npz')['example'].item()
 tidigits = np.load('tidigits_python3.npz')['tidigits']
@@ -20,7 +22,11 @@ matrix_tidigits = proto.correlation_mfcc(tidigits,40)
 correlation_matrix = np.corrcoef(matrix_tidigits)
 
 plt.pcolormesh(correlation_matrix)
-plt.show()
+#plt.show()
+
+x=proto.mfcc(tidigits[0]['samples'])
+y=proto.mfcc(tidigits[2]['samples'])
+print (proto.dtw(x, y, distance.euclidean))
 
 # lmfcc_tidigits = proto.mfcc(tidigits[3]['samples'])
 # print(tidigits[3]['digit'])

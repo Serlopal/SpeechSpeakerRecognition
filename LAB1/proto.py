@@ -157,7 +157,25 @@ def dtw(x, y, dist):
         d: global distance between the sequences (scalar) normalized to len(x)+len(y)
         LD: local distance between frames from x and y (NxM matrix)
         AD: accumulated distance between frames of x and y (NxM matrix)
-        path: best path thtough AD
+        path: best path through AD
 
     Note that you only need to define the first output for this exercise.
     """
+    N=x.shape[0]
+    M=y.shape[0]
+    locD = np.zeros([N,M])
+
+    for i in range(N):
+        for j in range(M):
+            locD[i,j]=dist(x[i],y[j])
+
+
+    AccD = np.zeros([N,M])
+    AccD[:,0]=locD[:,0]
+    AccD[0,:]=locD[0,:]
+
+    for i in range(1,N):
+        for j in range(1,M):
+            AccD[i,j] = locD[i,j] + min(AccD[i-1,j],AccD[i-1,j-1],AccD[i,j-1])
+
+    return AccD[N-1,M-1]
