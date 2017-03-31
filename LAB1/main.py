@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
 from scipy.cluster.hierarchy import linkage, dendrogram
+from sklearn.mixture import GMM
 
 
 example = np.load('example_python3.npz')['example'].item()
@@ -25,8 +26,8 @@ tidigits = np.load('tidigits_python3.npz')['tidigits']
 # plt.pcolormesh(correlation_matrix)
 #plt.show()
 
-x=proto.mfcc(tidigits[0]['samples'])
-y=proto.mfcc(tidigits[2]['samples'])
+# x=proto.mfcc(tidigits[0]['samples'])
+# y=proto.mfcc(tidigits[2]['samples'])
 # result1 = (proto.dtw(x, y, distance.euclidean))
 # np.save('result1',result1)
 
@@ -37,7 +38,12 @@ D = np.load('matrix_D.npy')
 plt.pcolormesh(D)
 plt.show()
 
-dendrogram(linkage(D, method='complete'))
+dendrogram(linkage(D, method='complete'), labels = tools.tidigit2labels(tidigits))
+plt.show()
+
+clf = GMM(n_components=2, covariance_type='full')
+clf.fit(D)
+
 
 # plt.pcolormesh(glob_mat)
 # plt.show()
