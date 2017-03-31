@@ -7,15 +7,15 @@ import scipy.fftpack
 import matplotlib.pyplot as plt
 
 
-def correlation_mfcc(input):
-    result = np.empty((0,13))
+def correlation_mfcc(input,d):
+    result = np.empty((0,d))
     for utterance in input:
         result = np.append(result, mfcc(utterance['samples']),axis=0)
     return result
 
 # Function given by the exercise ----------------------------------
 
-def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, nceps=13, samplingrate=20000, liftercoeff=22):
+def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, nceps=13, samplingrate=20000, liftercoeff=22, cepstrum_flag=False):
     """Computes Mel Frequency Cepstrum Coefficients.
 
     Args:
@@ -36,8 +36,12 @@ def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, ncep
     windowed = windowing(preemph)
     spec = powerSpectrum(windowed, nfft)
     mspec = logMelSpectrum(spec, samplingrate)
-    ceps = cepstrum(mspec, nceps)
-    return tools.lifter(ceps, liftercoeff)
+
+    if cepstrum_flag is True:
+        ceps = cepstrum(mspec, nceps)
+        return tools.lifter(ceps, liftercoeff)
+    else:
+        return mspec
 
 # Functions to be implemented ----------------------------------
 

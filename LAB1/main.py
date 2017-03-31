@@ -16,7 +16,7 @@ tidigits = np.load('tidigits_python3.npz')['tidigits']
 #
 # lmfcc = proto.mfcc(example['samples'])
 # print(lmfcc.shape)
-matrix_tidigits = proto.correlation_mfcc(tidigits)
+matrix_tidigits = proto.correlation_mfcc(tidigits,40)
 correlation_matrix = np.corrcoef(matrix_tidigits)
 
 plt.pcolormesh(correlation_matrix)
