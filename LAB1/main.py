@@ -9,9 +9,11 @@ frames = proto.enframe(example['samples'], int(20000*0.02), int(20000*0.01))
 preemph = proto.preemp(frames)
 windowed = proto.windowing(preemph)
 
-print(windowed-example['windowed'])
+spec = proto.powerSpectrum(windowed, 512)
 
-plt.pcolormesh(windowed)
+print(spec-example['spec'])
+
+plt.pcolormesh(spec)
 plt.show()
 
 

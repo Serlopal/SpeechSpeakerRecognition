@@ -2,6 +2,8 @@
 import math
 import numpy as np
 import scipy.signal
+import scipy.fftpack
+
 # Function given by the exercise ----------------------------------
 
 def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, nceps=13, samplingrate=20000, liftercoeff=22):
@@ -92,6 +94,9 @@ def powerSpectrum(input, nfft):
         array of power spectra [N x nfft]
     Note: you can use the function fft from scipy.fftpack
     """
+
+    return abs(scipy.fftpack.fft(input,nfft))**2
+
 
 def logMelSpectrum(input, samplingrate):
     """
