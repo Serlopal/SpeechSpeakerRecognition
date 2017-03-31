@@ -8,12 +8,12 @@ tidigits = np.load('tidigits_python3.npz')['tidigits']
 frames = proto.enframe(example['samples'], int(20000*0.02), int(20000*0.01))
 preemph = proto.preemp(frames)
 windowed = proto.windowing(preemph)
-
 spec = proto.powerSpectrum(windowed, 512)
+mspec = proto.logMelSpectrum(spec, 20000)
 
-print(spec-example['spec'])
+print(mspec-example['mspec'])
 
-plt.pcolormesh(spec)
+plt.pcolormesh(mspec)
 plt.show()
 
 

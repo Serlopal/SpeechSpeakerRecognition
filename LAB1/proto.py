@@ -1,8 +1,11 @@
 # DT2118, Lab 1 Feature Extraction
+import tools
 import math
 import numpy as np
 import scipy.signal
 import scipy.fftpack
+import matplotlib.pyplot as plt
+
 
 # Function given by the exercise ----------------------------------
 
@@ -112,6 +115,11 @@ def logMelSpectrum(input, samplingrate):
     Note: use the trfbank function provided in tools.py to calculate the filterbank shapes and
           nmelfilters
     """
+    nfft = input.shape[1]
+    triangular_filters = tools.trfbank(samplingrate, nfft)
+    # plt.plot(triangular_filters)
+    # plt.show()
+    return np.log(np.dot(input,triangular_filters.T))
 
 def cepstrum(input, nceps):
     """
