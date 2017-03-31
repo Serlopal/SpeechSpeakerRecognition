@@ -12,9 +12,9 @@ spec = proto.powerSpectrum(windowed, 512)
 mspec = proto.logMelSpectrum(spec, 20000)
 mfcc = proto.cepstrum(mspec,13)
 
-print (np.sum((mfcc-example['mfcc'])))
+print(np.sum(mfcc-example['mfcc']))
 
-plt.pcolormesh(mspec)
+plt.pcolormesh(mfcc.T)
 plt.show()
 
 
