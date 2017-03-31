@@ -7,6 +7,12 @@ import scipy.fftpack
 import matplotlib.pyplot as plt
 
 
+def correlation_mfcc(input):
+    result = np.empty((0,13))
+    for utterance in input:
+        result = np.append(result, mfcc(utterance['samples']),axis=0)
+    return result
+
 # Function given by the exercise ----------------------------------
 
 def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, nceps=13, samplingrate=20000, liftercoeff=22):
@@ -31,7 +37,7 @@ def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, ncep
     spec = powerSpectrum(windowed, nfft)
     mspec = logMelSpectrum(spec, samplingrate)
     ceps = cepstrum(mspec, nceps)
-    return lifter(ceps, liftercoeff)
+    return tools.lifter(ceps, liftercoeff)
 
 # Functions to be implemented ----------------------------------
 
