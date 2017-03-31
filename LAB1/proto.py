@@ -42,6 +42,7 @@ def enframe(samples, winlen, winshift):
         in the input signal
     """
 
+
     difference = winlen - winshift
     N = math.floor(((len(samples)-winlen)/winshift)+1)
     x = np.zeros([N, winlen])
@@ -50,6 +51,8 @@ def enframe(samples, winlen, winshift):
     return x
 
 def preemp(input, p=0.97):
+    print("hola")
+
     """
     Pre-emphasis filter.
 
