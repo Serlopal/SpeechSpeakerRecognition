@@ -50,8 +50,6 @@ def enframe(samples, winlen, winshift):
     return x
 
 def preemp(input, p=0.97):
-    print("hola")
-
     """
     Pre-emphasis filter.
 
@@ -78,6 +76,9 @@ def windowing(input):
     Note (you can use the function hamming from scipy.signal, include the sym=0 option
     if you want to get the same results as in the example)
     """
+    M = input.shape[1]
+    window = scipy.signal.hamming(M, False)
+    return np.multiply(input, window)
 
 def powerSpectrum(input, nfft):
     """

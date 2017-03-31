@@ -6,13 +6,12 @@ example = np.load('example_python3.npz')['example'].item()
 tidigits = np.load('tidigits_python3.npz')['tidigits']
 # print(example['samples'])
 frames = proto.enframe(example['samples'], int(20000*0.02), int(20000*0.01))
-
-print(frames - example['frames'])
 preemph = proto.preemp(frames)
+windowed = proto.windowing(preemph)
 
-# print(preemph-example['preemph'])
+print(windowed-example['windowed'])
 
-plt.pcolormesh(preemph)
+plt.pcolormesh(windowed)
 plt.show()
 
 
