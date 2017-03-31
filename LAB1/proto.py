@@ -134,6 +134,9 @@ def cepstrum(input, nceps):
     Note: you can use the function dct from scipy.fftpack.realtransforms
     """
 
+    dct = scipy.fftpack.realtransforms.dct(input,axis=0)
+    return dct[:, 0:nceps]
+
 def dtw(x, y, dist):
     """Dynamic Time Warping.
 

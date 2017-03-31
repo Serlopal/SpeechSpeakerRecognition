@@ -10,8 +10,9 @@ preemph = proto.preemp(frames)
 windowed = proto.windowing(preemph)
 spec = proto.powerSpectrum(windowed, 512)
 mspec = proto.logMelSpectrum(spec, 20000)
+mfcc = proto.cepstrum(mspec,13)
 
-print(mspec-example['mspec'])
+print (np.sum((mfcc-example['mfcc'])))
 
 plt.pcolormesh(mspec)
 plt.show()
