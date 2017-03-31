@@ -5,6 +5,19 @@ import numpy as np
 import scipy.signal
 import scipy.fftpack
 import matplotlib.pyplot as plt
+from scipy.spatial import distance
+
+
+def distances_global(input):
+    word_mfcc = []
+    for utte in input:
+        word_mfcc.append(mfcc(utte['samples']))
+
+    glob_mat = np.zeros([len(word_mfcc),len(word_mfcc)])
+    for i,word in enumerate(word_mfcc):
+        for j,word2 in enumerate(word_mfcc):
+            glob_mat[i,j] = dtw(word, word2, distance.euclidean)
+    return glob_mat
 
 
 def correlation_mfcc(input,d):
