@@ -43,7 +43,7 @@ def enframe(samples, winlen, winshift):
     """
 
     difference = winlen - winshift
-    N = math.ceil((len(samples)-winlen)/difference)
+    N = math.floor(((len(samples)-winlen)/winshift)+1)
     x = np.zeros([N, winlen])
     for i in range(N):
         x[i] = samples[i*winshift:(i*winshift)+winlen]
