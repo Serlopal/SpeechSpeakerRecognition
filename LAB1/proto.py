@@ -28,7 +28,7 @@ def correlation_mfcc(input,d):
 
 # Function given by the exercise ----------------------------------
 
-def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, nceps=13, samplingrate=20000, liftercoeff=22, cepstrum_flag=False):
+def mfcc(samples, winlen = 400, winshift = 200, preempcoeff=0.97, nfft=512, nceps=13, samplingrate=20000, liftercoeff=22, cepstrum_flag=True):
     """Computes Mel Frequency Cepstrum Coefficients.
 
     Args:
@@ -106,6 +106,9 @@ def windowing(input):
     """
     M = input.shape[1]
     window = scipy.signal.hamming(M, False)
+    # plt.plot(window)
+    # plt.title('Hamming window with %d points'%M)
+    # plt.show()
     return np.multiply(input, window)
 
 def powerSpectrum(input, nfft):
@@ -141,6 +144,7 @@ def logMelSpectrum(input, samplingrate):
     nfft = input.shape[1]
     triangular_filters = tools.trfbank(samplingrate, nfft)
     # plt.plot(triangular_filters)
+    # plt.title('Mel filterbank filters, number of filters = %d'%len(triangular_filters))
     # plt.show()
     return np.log(np.dot(input,triangular_filters.T))
 
