@@ -1,3 +1,4 @@
+import proto2
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.mixture import log_multivariate_normal_density
@@ -48,6 +49,7 @@ plt.ylim(0, gmm_obsloglik4.shape[1])
 plt.title('Log Lik. GMM, Digit \'Four\'')
 plt.show()
 
-
-
 # (( 4 END ))
+
+gmm_loglik = proto2.gmmloglik(gmm_obsloglik, models[0]['gmm']['weights'])
+print(example['gmm_loglik'] - gmm_loglik)
