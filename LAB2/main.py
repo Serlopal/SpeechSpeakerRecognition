@@ -54,6 +54,12 @@ for i, model in enumerate(models):
         gmm_obsloglik_aux = log_multivariate_normal_density(utterance['mfcc'], model['gmm']['means'], model['gmm']['covars'])
         gmm_global_loglik[i, j] = proto2.gmmloglik(gmm_obsloglik_aux, model['gmm']['weights'])
 
+#normalization
+column_totals = np.sum(gmm_global_loglik,0)
+gmm_global_loglik = gmm_global_loglik/column_totals
+
+
+
 print(gmm_global_loglik)
 plt.pcolormesh(gmm_global_loglik)
 plt.show()
