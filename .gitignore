@@ -47,5 +47,6 @@ Temporary Items
 .apdisk
 
 # Pycharm Files
-.idea
-.pyc
+*.pyc
+*.iml
+*.xml
