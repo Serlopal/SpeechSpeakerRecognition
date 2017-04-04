@@ -17,8 +17,12 @@ example = np.load('lab2_example.npz',encoding='latin1')['example'].item()
 # plt.pcolormesh(example['hmm_obsloglik'].T)
 # plt.show()
 
+# (( 4 ))
+
+# example using hmm: probabilities of gaussianans in mixture given samples
 hmm_obsloglik = log_multivariate_normal_density(example['mfcc'], models[0]['hmm']['means'],models[0]['hmm']['covars'])
 print(np.sum(hmm_obsloglik - example['hmm_obsloglik']))
+# example using gmm: probabilities of gaussianans in mixture given samples
 gmm_obsloglik = log_multivariate_normal_density(example['mfcc'], models[0]['gmm']['means'],models[0]['gmm']['covars'])
 print(np.sum(gmm_obsloglik - example['gmm_obsloglik']))
 
@@ -26,7 +30,7 @@ print(np.sum(gmm_obsloglik - example['gmm_obsloglik']))
 # print(tidigits[0].keys())
 print(tidigits[10]['digit'])
 print(models[5]['digit'])
-# Utterances and model corresponding to digit 'Four'
+# Utterances and model corresponding to digit 'Four' : probabilities of gaussianans in mixture given samples
 hmm_obsloglik4 = log_multivariate_normal_density(tidigits[10]['mfcc'], models[5]['hmm']['means'],models[5]['hmm']['covars'])
 gmm_obsloglik4 = log_multivariate_normal_density(tidigits[10]['mfcc'], models[5]['gmm']['means'],models[5]['gmm']['covars'])
 
@@ -44,3 +48,6 @@ plt.ylim(0, gmm_obsloglik4.shape[1])
 plt.title('Log Lik. GMM, Digit \'Four\'')
 plt.show()
 
+
+
+# (( 4 END ))
