@@ -14,7 +14,7 @@ def gmmloglik(log_emlik, weights):
         gmmloglik: scalar, log likelihood of data given the GMM model.
     """
     weights_mat = np.tile(np.log(weights), (log_emlik.shape[0],1))
-    return np.sum(logsumexp(weights_mat.T + log_emlik.T))
+    return np.sum(logsumexp(weights_mat + log_emlik, axis=1))
 
 def forward(log_emlik, log_startprob, log_transmat):
     """Forward probabilities in log domain.
