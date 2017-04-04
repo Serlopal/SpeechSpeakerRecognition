@@ -50,7 +50,7 @@ print(np.sum(gmm_obsloglik - example['gmm_obsloglik']))
 
 # (( 5 END))
 gmm_loglik = proto2.gmmloglik(gmm_obsloglik, models[0]['gmm']['weights'])
-print(example['gmm_loglik'] - gmm_loglik)
+# print(example['gmm_loglik'] - gmm_loglik)
 
 gmm_global_loglik = np.zeros([len(models), len(tidigits)])
 counter = 0
@@ -58,28 +58,36 @@ for j, utterance in enumerate(tidigits):
     for i, model in enumerate(models):
         gmm_obsloglik_aux = log_multivariate_normal_density(utterance['mfcc'], model['gmm']['means'], model['gmm']['covars'])
         gmm_global_loglik[i, j] = proto2.gmmloglik(gmm_obsloglik_aux, model['gmm']['weights'])
+    # calculation of correct guesses
     model_likelihoods = gmm_global_loglik[:,j]
     winner = np.argmax(model_likelihoods)
     if models[winner]['digit'] == utterance['digit']:
         counter = counter +1
 
-print (counter / (gmm_global_loglik.shape[1]) , ' %')
+print (counter*100 / (gmm_global_loglik.shape[1]),'% correctly guessed utterances')
 
 #normalization
 column_totals = np.sum(gmm_global_loglik,0)
 gmm_global_loglik = -1*(gmm_global_loglik/column_totals)
 
-#calculation of correct guesses
-
-
-
-
 
 #print(gmm_global_loglik)
-plt.pcolormesh(gmm_global_loglik)
-plt.show()
+# plt.pcolormesh(gmm_global_loglik)
+# plt.title('Total normalized log-likelihoods for each pair utterance-model')
+# plt.ylim(0, gmm_global_loglik.shape[0])
+# plt.xlim(0, gmm_global_loglik.shape[1])
+# plt.xlabel('Utterances')
+# plt.ylabel('Models')
+# plt.show()
+
+# (( 5 END ))
+# (( 6 BEGIN ))
 
 
+hmm_logalpha = proto2.forward(hmm_obsloglik, np.log(models[0]['hmm']['startprob']), np.log(models[0]['hmm']['transmat']))
+print(hmm_logalpha)
+print(example['hmm_logalpha'])
 
+print(hmm_logalpha - example['hmm_logalpha'])
 
 
