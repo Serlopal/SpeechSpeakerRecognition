@@ -4,6 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.mixture import log_multivariate_normal_density
 
+plt.rcParams['image.cmap'] = 'jet'
+
+
+
 tidigits = np.load('lab2_tidigits.npz', encoding='latin1')['tidigits']
 models = np.load('lab2_models.npz', encoding='latin1')['models']
 
@@ -49,18 +53,29 @@ gmm_loglik = proto2.gmmloglik(gmm_obsloglik, models[0]['gmm']['weights'])
 print(example['gmm_loglik'] - gmm_loglik)
 
 gmm_global_loglik = np.zeros([len(models), len(tidigits)])
-for i, model in enumerate(models):
-    for j, utterance in enumerate(tidigits):
+counter = 0
+for j, utterance in enumerate(tidigits):
+    for i, model in enumerate(models):
         gmm_obsloglik_aux = log_multivariate_normal_density(utterance['mfcc'], model['gmm']['means'], model['gmm']['covars'])
         gmm_global_loglik[i, j] = proto2.gmmloglik(gmm_obsloglik_aux, model['gmm']['weights'])
+    model_likelihoods = gmm_global_loglik[:,j]
+    winner = np.argmax(model_likelihoods)
+    if models[winner]['digit'] == utterance['digit']:
+        counter = counter +1
+
+print (counter / (gmm_global_loglik.shape[1]) , ' %')
 
 #normalization
 column_totals = np.sum(gmm_global_loglik,0)
-gmm_global_loglik = gmm_global_loglik/column_totals
+gmm_global_loglik = -1*(gmm_global_loglik/column_totals)
+
+#calculation of correct guesses
 
 
 
-print(gmm_global_loglik)
+
+
+#print(gmm_global_loglik)
 plt.pcolormesh(gmm_global_loglik)
 plt.show()
 
