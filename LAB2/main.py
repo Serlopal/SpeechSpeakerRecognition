@@ -118,13 +118,40 @@ column_totals = np.sum(hmm_global_loglik,0)
 hmm_global_loglik = -1*(hmm_global_loglik/column_totals)
 
 # print(hmm_global_loglik)
-plt.pcolormesh(hmm_global_loglik)
-plt.title('Total normalized HHM-log-likelihoods for each pair utterance-model')
-plt.ylim(0, hmm_global_loglik.shape[0])
-plt.xlim(0, hmm_global_loglik.shape[1])
+# plt.pcolormesh(hmm_global_loglik)
+# plt.title('Total normalized HHM-log-likelihoods for each pair utterance-model')
+# plt.ylim(0, hmm_global_loglik.shape[0])
+# plt.xlim(0, hmm_global_loglik.shape[1])
+# plt.xlabel('Utterances')
+# plt.ylabel('Models')
+# plt.show()
+
+
+# GMM using HMM gaussians
+ghmm_global_loglik = np.zeros([len(models), len(tidigits)])
+counter = 0
+for j, utterance in enumerate(tidigits):
+    for i, model in enumerate(models):
+        ghmm_obsloglik_aux = log_multivariate_normal_density(utterance['mfcc'], model['hmm']['means'], model['hmm']['covars'])
+        ghmm_global_loglik[i, j] = proto2.gmmloglik(ghmm_obsloglik_aux, np.ones([1,len( model['hmm']['means'])])/len(model['hmm']['means']))
+    # calculation of correct guesses
+    model_likelihoods_ghmm = ghmm_global_loglik[:,j]
+    winner = np.argmax(model_likelihoods_ghmm)
+    if models[winner]['digit'] == utterance['digit']:
+        counter = counter + 1
+
+print (counter*100 / (len(tidigits)),'% correctly guessed utterances using hmm gaussians for gmm')
+
+#normalization
+column_totals = np.sum(ghmm_global_loglik,0)
+ghmm_global_loglik = -1*(ghmm_global_loglik/column_totals)
+
+
+# print using hmm gaussians for gmm
+plt.pcolormesh(ghmm_global_loglik)
+plt.title('Total normalized GMM-log-likelihoods for each pair utterance-model using HMM gaussians')
+plt.ylim(0, ghmm_global_loglik.shape[0])
+plt.xlim(0, ghmm_global_loglik.shape[1])
 plt.xlabel('Utterances')
 plt.ylabel('Models')
 plt.show()
-
-
-
