@@ -108,8 +108,6 @@ for j, utterance in enumerate(tidigits):
         hmm_obsloglik_aux = log_multivariate_normal_density(utterance['mfcc'], model['hmm']['means'], model['hmm']['covars'])
         alpha_lattice = proto2.forward(hmm_obsloglik_aux, np.log(model['hmm']['startprob']), np.log(model['hmm']['transmat']))
         hmm_global_loglik[i, j] = logsumexp(alpha_lattice[-1,:])
-
-
     # calculation of correct guesses
     model_likelihoods = hmm_global_loglik[:,j]
     winner = np.argmax(model_likelihoods)
@@ -176,11 +174,67 @@ ghmm_global_loglik = -1*(ghmm_global_loglik/column_totals)
 # plt.show()
 
 
-print('digit of model is ', models[-1]['digit'])
-print('digit of utterance is ', tidigits[-1]['digit'])
+# print('digit of model is ', models[-1]['digit'])
+# print('digit of utterance is ', tidigits[-1]['digit'])
 
-print(example['hmm_vloglik'])
+
+# (( 6.2 VITERBI ))
+
+# print(example['hmm_vloglik'])
 [a,b] = proto2.viterbi(hmm_obsloglik, np.log(models[0]['hmm']['startprob']), np.log(models[0]['hmm']['transmat']))
 
-print(len(example['hmm_vloglik'][1]))
-print(len(b))
+# print(len(example['hmm_vloglik'][1]))
+# print(len(b))
+
+# Viterbi with GMM
+hmm_global_vloglik = np.zeros([len(models), len(tidigits)])
+counter = 0
+for j, utterance in enumerate(tidigits):
+    for i, model in enumerate(models):
+        hmm_vloglik_aux = log_multivariate_normal_density(utterance['mfcc'], model['hmm']['means'], model['hmm']['covars'])
+        (hmm_global_vloglik[i, j], viterbi_path) = proto2.viterbi(hmm_vloglik_aux, np.log(model['hmm']['startprob']), np.log(model['hmm']['transmat']))
+    # calculation of correct guesses
+    model_likelihoods_vhmm = hmm_global_vloglik[:,j]
+    winner = np.argmax(model_likelihoods_vhmm)
+    if models[winner]['digit'] == utterance['digit']:
+        counter = counter + 1
+    else:
+        print('The utterance', j, 'that corresponds to the digit', utterance['digit'], 'is mistaken by the digit',
+              models[winner]['digit'], '(model', winner, ')')
+
+print (counter*100 / (len(tidigits)),'% correctly guessed utterances using hmm viterbi maximum likelihood')
+
+#normalization
+column_totals = np.sum(hmm_global_vloglik,0)
+hmm_global_vloglik = -1*(hmm_global_vloglik/column_totals)
+
+# print viterbi using hmm
+# plt.pcolormesh(hmm_global_vloglik)
+# plt.title('Total normalized HMM-viterbi-log-likelihoods for each pair utterance-model')
+# plt.ylim(0, hmm_global_vloglik.shape[0])
+# plt.xlim(0, hmm_global_vloglik.shape[1])
+# plt.xlabel('Utterances')
+# plt.ylabel('Models')
+# plt.show()
+
+# alpha plotting with viterbi path
+# alpha_lattice[alpha_lattice == -np.inf] = np.min(alpha_lattice[-1,:])
+# alpha_lattice = alpha_lattice.T
+# plt.pcolormesh(alpha_lattice)
+# plt.plot(viterbi_path)
+# plt.title('Alpha matrix with Viterbi path')
+# plt.ylim(0, alpha_lattice.shape[0])
+# plt.xlim(0, alpha_lattice.shape[1])
+# plt.xlabel('time')
+# plt.ylabel('states')
+# plt.show()
+
+
+# (( 6.3 OPTIONAL ))
+
+# Beta (backward pass) computation
+hmm_logbeta = proto2.backward(hmm_obsloglik, np.log(models[0]['hmm']['startprob']), np.log(models[0]['hmm']['transmat']))
+print(hmm_logbeta)
+print(example['hmm_logbeta'])
+
+print(hmm_logbeta - example['hmm_logbeta'])
