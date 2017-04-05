@@ -59,3 +59,16 @@ def viterbi(log_emlik, log_startprob, log_transmat):
         viterbi_loglik: log likelihood of the best path
         viterbi_path: best path
     """
+    [N,M] = log_emlik.shape
+
+    logV = np.zeros([log_emlik.shape])
+    logV[0,:] = log_startprob + log_emlik[0,:]
+    for n in range(1,N):
+        for j in range(M):
+            logV[n,j] = np.max(logV[n-1,:] + log_transmat[:,j]) + log_emlik[n,j]
+
+    B = np.zeros([logV])
+    for n in range(N):
+        for j in range(M):
+            B[n,j] = np.amax(logV[n-1,:]+log_transmat[:,j])
+

@@ -99,12 +99,17 @@ print(example['hmm_loglik'])
 print(hmm_loglik - example['hmm_loglik'])
 
 # Computing probability of whole sequence for example for each utterance-model pair (using HMM)
+
+
 hmm_global_loglik = np.zeros([len(models), len(tidigits)])
 counter = 0
 for j, utterance in enumerate(tidigits):
     for i, model in enumerate(models):
         hmm_obsloglik_aux = log_multivariate_normal_density(utterance['mfcc'], model['hmm']['means'], model['hmm']['covars'])
-        hmm_global_loglik[i, j] = logsumexp(proto2.forward(hmm_obsloglik_aux, np.log(model['hmm']['startprob']), np.log(model['hmm']['transmat']))[-1,:])
+        alpha_lattice = proto2.forward(hmm_obsloglik_aux, np.log(model['hmm']['startprob']), np.log(model['hmm']['transmat']))
+        hmm_global_loglik[i, j] = logsumexp(alpha_lattice[-1,:])
+
+
     # calculation of correct guesses
     model_likelihoods = hmm_global_loglik[:,j]
     winner = np.argmax(model_likelihoods)
@@ -125,6 +130,17 @@ hmm_global_loglik = -1*(hmm_global_loglik/column_totals)
 # plt.xlabel('Utterances')
 # plt.ylabel('Models')
 # plt.show()
+
+# alpha plotting
+alpha_lattice[alpha_lattice == -np.inf] = np.min(alpha_lattice[-1,:])
+alpha_lattice = alpha_lattice.T
+plt.pcolormesh(alpha_lattice)
+plt.title('alpha matrix')
+plt.ylim(0, alpha_lattice.shape[0])
+plt.xlim(0, alpha_lattice.shape[1])
+plt.xlabel('time')
+plt.ylabel('states')
+plt.show()
 
 
 # GMM using HMM gaussians
@@ -148,10 +164,14 @@ ghmm_global_loglik = -1*(ghmm_global_loglik/column_totals)
 
 
 # print using hmm gaussians for gmm
-plt.pcolormesh(ghmm_global_loglik)
-plt.title('Total normalized GMM-log-likelihoods for each pair utterance-model using HMM gaussians')
-plt.ylim(0, ghmm_global_loglik.shape[0])
-plt.xlim(0, ghmm_global_loglik.shape[1])
-plt.xlabel('Utterances')
-plt.ylabel('Models')
-plt.show()
+# plt.pcolormesh(ghmm_global_loglik)
+# plt.title('Total normalized GMM-log-likelihoods for each pair utterance-model using HMM gaussians')
+# plt.ylim(0, ghmm_global_loglik.shape[0])
+# plt.xlim(0, ghmm_global_loglik.shape[1])
+# plt.xlabel('Utterances')
+# plt.ylabel('Models')
+# plt.show()
+
+
+print('digit of model is ', models[-1]['digit'])
+print('digit of utterance is ', tidigits[-1]['digit'])
