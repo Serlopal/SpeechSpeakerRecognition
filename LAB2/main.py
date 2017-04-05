@@ -115,8 +115,11 @@ for j, utterance in enumerate(tidigits):
     winner = np.argmax(model_likelihoods)
     if models[winner]['digit'] == utterance['digit']:
         counter = counter + 1
+    else:
+        print('The utterance', j, 'that corresponds to the digit', utterance['digit'], 'is mistaken by the digit',
+              models[winner]['digit'], '(model', winner, ')')
 
-print (counter*100 / (len(tidigits)),'% correctly guessed utterances')
+# print (counter*100 / (len(tidigits)),'% correctly guessed utterances')
 
 #normalization (for suitable printing)
 column_totals = np.sum(hmm_global_loglik,0)
@@ -132,15 +135,15 @@ hmm_global_loglik = -1*(hmm_global_loglik/column_totals)
 # plt.show()
 
 # alpha plotting
-alpha_lattice[alpha_lattice == -np.inf] = np.min(alpha_lattice[-1,:])
-alpha_lattice = alpha_lattice.T
-plt.pcolormesh(alpha_lattice)
-plt.title('alpha matrix')
-plt.ylim(0, alpha_lattice.shape[0])
-plt.xlim(0, alpha_lattice.shape[1])
-plt.xlabel('time')
-plt.ylabel('states')
-plt.show()
+# alpha_lattice[alpha_lattice == -np.inf] = np.min(alpha_lattice[-1,:])
+# alpha_lattice = alpha_lattice.T
+# plt.pcolormesh(alpha_lattice)
+# plt.title('alpha matrix')
+# plt.ylim(0, alpha_lattice.shape[0])
+# plt.xlim(0, alpha_lattice.shape[1])
+# plt.xlabel('time')
+# plt.ylabel('states')
+# plt.show()
 
 
 # GMM using HMM gaussians
@@ -156,7 +159,7 @@ for j, utterance in enumerate(tidigits):
     if models[winner]['digit'] == utterance['digit']:
         counter = counter + 1
 
-print (counter*100 / (len(tidigits)),'% correctly guessed utterances using hmm gaussians for gmm')
+# print (counter*100 / (len(tidigits)),'% correctly guessed utterances using hmm gaussians for gmm')
 
 #normalization
 column_totals = np.sum(ghmm_global_loglik,0)
@@ -175,3 +178,6 @@ ghmm_global_loglik = -1*(ghmm_global_loglik/column_totals)
 
 print('digit of model is ', models[-1]['digit'])
 print('digit of utterance is ', tidigits[-1]['digit'])
+
+print(example['hmm_vloglik'])
+print(proto2.viterbi(hmm_obsloglik, np.log(models[0]['hmm']['startprob']), np.log(models[0]['hmm']['transmat'])))
