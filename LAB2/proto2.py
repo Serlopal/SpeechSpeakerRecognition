@@ -69,5 +69,10 @@ def viterbi(log_emlik, log_startprob, log_transmat):
             logV[n,j] = np.max(logV[n-1,:] + log_transmat[:,j]) + log_emlik[n,j]
             B[n, j] = np.argmax(logV[n - 1, :] + log_transmat[:, j])
 
-    return [logV[-1,-1], B[:,-1]]
+    path = np.zeros(N)
+    # path[-1] = np.argmax() # BIEN HECHO
+    path[-1] = 8 # MAL HECHO
+    for i in range(1,N)[::-1]:
+        path[i-1] = B[i, int(path[i])]
+    return [logV[-1,-1], path]
 
