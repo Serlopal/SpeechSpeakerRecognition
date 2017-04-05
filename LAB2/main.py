@@ -180,4 +180,7 @@ print('digit of model is ', models[-1]['digit'])
 print('digit of utterance is ', tidigits[-1]['digit'])
 
 print(example['hmm_vloglik'])
-print(proto2.viterbi(hmm_obsloglik, np.log(models[0]['hmm']['startprob']), np.log(models[0]['hmm']['transmat'])))
+[a,b] = proto2.viterbi(hmm_obsloglik, np.log(models[0]['hmm']['startprob']), np.log(models[0]['hmm']['transmat']))
+
+print(len(example['hmm_vloglik'][1]))
+print(len(b))
