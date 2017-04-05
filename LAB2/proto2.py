@@ -62,15 +62,12 @@ def viterbi(log_emlik, log_startprob, log_transmat):
     [N,M] = log_emlik.shape
 
     logV = np.zeros(log_emlik.shape)
+    B = np.zeros(logV.shape)
     logV[0,:] = log_startprob + log_emlik[0,:]
     for n in range(1,N):
         for j in range(M):
             logV[n,j] = np.max(logV[n-1,:] + log_transmat[:,j]) + log_emlik[n,j]
+            B[n, j] = np.argmax(logV[n - 1, :] + log_transmat[:, j])
 
-    B = np.zeros(logV.shape)
-    for n in range(N):
-        for j in range(M):
-            B[n,j] = np.amax(logV[n-1,:]+log_transmat[:,j])
-
-    return np.sum(logV)
+    return [logV[-1,-1], B[:,-1]]
 
