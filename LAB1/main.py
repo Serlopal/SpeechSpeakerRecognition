@@ -22,6 +22,22 @@ tidigits = np.load('tidigits_python3.npz')['tidigits']
 #
 # lmfcc = proto.mfcc(example['samples'])
 # print(lmfcc.shape)
+aux = proto.mfcc(tidigits[4]['samples'])
+plt.pcolormesh(aux.T)
+plt.xlim(0, aux.shape[0])
+plt.ylim(0, aux.shape[1])
+plt.title(tidigits[4]['digit'])
+plt.show()
+
+
+aux = proto.mfcc(tidigits[8]['samples'])
+plt.pcolormesh(aux.T)
+plt.xlim(0, aux.shape[0])
+plt.ylim(0, aux.shape[1])
+plt.title(tidigits[8]['digit'])
+plt.show()
+
+
 matrix_tidigits = proto.correlation_mfcc(tidigits,13)
 correlation_matrix = np.corrcoef(matrix_tidigits)
 #
