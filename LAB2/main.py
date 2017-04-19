@@ -238,3 +238,16 @@ print(hmm_logbeta)
 print(example['hmm_logbeta'])
 
 print(hmm_logbeta - example['hmm_logbeta'])
+
+hmm_obsloglik_aux = log_multivariate_normal_density(tidigits[4]['mfcc'], models[2]['hmm']['means'], models[2]['hmm']['covars'])
+hmm_logbeta = proto2.backward(hmm_obsloglik_aux, np.log(models[2]['hmm']['startprob']), np.log(models[2]['hmm']['transmat']))
+print(models[2]['digit'])
+print(tidigits[4]['digit'])
+
+plt.pcolormesh(hmm_logbeta.T)
+plt.title('hmm_logBeta probs')
+plt.xlim(0, hmm_logbeta.shape[0])
+plt.ylim(0, hmm_logbeta.shape[1])
+plt.xlabel('time')
+plt.ylabel('states')
+plt.show()
